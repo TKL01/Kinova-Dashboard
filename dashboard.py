@@ -27,7 +27,7 @@ selected_joint = st.selectbox("Select a specific Joint:", joint_options)
 joint_number = selected_joint.split("_")[1]
 
 # line charts for the selected joint
-st.write(f"Diagram for {selected_joint}:")
+st.write(f"Diagrams for {selected_joint}:")
 
 # Define the columns for the selected joint
 pos_col = f"Pos_{joint_number}"
@@ -51,4 +51,4 @@ plot_chart(df[time_col].values, df[pos_col].values, "Time [s]", "Position [deg]"
 plot_chart(df[time_col].values, df[temp_col].values, "Time [s]", "Temperature [°C]")
 plot_chart(df[time_col].values, df[torque_col].values, "Time [s]", "Torque [Nm]")
 plot_chart(df[time_col].values, df[current_col].values, "Time [s]", "Current [A]")
-plot_chart(df[time_col].values, df[velocity_col].values, "Time [s]", "Velocity [m/s]")
+plot_chart(df[time_col].values, df[velocity_col].values, "Time [s]", "Velocity [deg/s]")
