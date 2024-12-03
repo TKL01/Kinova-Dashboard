@@ -64,7 +64,7 @@ async def opcua_get_temperature(client, name):
                 print(VarList[-1])
 
         # Create CSV
-        filename = f"{0}_KinovaLog_joint_2.csv"
+        filename = f"{1}_KinovaLog_joint_rdn.csv"
         with open(filename, 'w', newline='') as f:
             writer = csv.writer(f, dialect='excel')
             writer.writerow(["Time (s)", "Pos_0", "Pos_1", "Pos_2", "Pos_3", "Pos_4", "Pos_5", "Pos_6", 
