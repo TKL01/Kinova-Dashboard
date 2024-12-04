@@ -64,7 +64,7 @@ async def opcua_get_temperature(client, name):
                 print(VarList[-1])
 
         # Create CSV
-        filename = f"{1}_KinovaLog_circle.csv"
+        filename = f"{1}_KinovaLog_trajectory.csv"
         with open(filename, 'w', newline='') as f:
             writer = csv.writer(f, dialect='excel')
             writer.writerow(["Time (s)", "Pos_0", "Pos_1", "Pos_2", "Pos_3", "Pos_4", "Pos_5", "Pos_6", 
@@ -93,7 +93,7 @@ async def opcua_get_temperature(client, name):
             await asyncio.sleep(0.5)
 
 print("Starting OPCUA Client")
-client = Client("opc.tcp://192.168.0.100:4840")  # Pi IP address
+client = Client("opc.tcp://192.168.0.101:4840")  # Pi IP address
 print("Client Created")
 my_thread = threading.Thread(target=asyncThreads, args=(opcua_get_temperature, client, "Kinova"))
 my_thread.start()
