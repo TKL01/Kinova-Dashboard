@@ -64,7 +64,7 @@ async def opcua_get_temperature(client, name):
                 print(VarList[-1])
 
         # Create CSV
-        filename = f"{1}_KinovaLog_j6_periodic_weight.csv"
+        filename = f"{1}_KinovaLog_rand_test_8_platte.csv"
         with open(filename, 'w', newline='') as f:
             writer = csv.writer(f, dialect='excel')
             writer.writerow(["Time (s)", "Pos_0", "Pos_1", "Pos_2", "Pos_3", "Pos_4", "Pos_5", "Pos_6", 
@@ -90,7 +90,7 @@ async def opcua_get_temperature(client, name):
             else:
                 print(f"Unexpected number of values: {len(val)}")
 
-            await asyncio.sleep(0.5)
+            await asyncio.sleep(0.5)  # 2 hz not enough?
 
 print("Starting OPCUA Client")
 client = Client("opc.tcp://192.168.0.101:4840")  # Pi IP address
