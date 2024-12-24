@@ -2,10 +2,28 @@ import streamlit as st
 import pandas as pd
 import altair as alt
 
-# Kinova Dashboard
+
 st.title("Kinova Dashboard")
 
-# load csv files with caching
+# Github repo raw links
+# csv_file_options = {
+#     "Kinova Log 0":'https://raw.githubusercontent.com/TKL01/Kinova-Dashboard/refs/heads/main/0_KinovaLog_joint_1.csv',
+#     "Kinova Log 1": 'https://raw.githubusercontent.com/TKL01/Kinova-Dashboard/refs/heads/main/0_KinovaLog_joint_3.csv',
+#     #'inova Log 2": 'https://raw.githubusercontent.com/TKL01/Kinova-Dashboard/refs/heads/main/2_KinovaLog.csv',
+# }
+
+# Github repo relative paths
+csv_file_options = {
+    "Kinova Log 0": "data/0_KinovaLog.csv",
+    "Kinova Log 1": "data/0_KinovaLog_joint_1.csv",
+    
+}
+
+
+# Dropdown to select csv file
+selected_file = st.selectbox("Select a CSV file:", list(csv_file_options.keys()))
+
+# load selected csv
 @st.cache_data
 def load_data_from_url(path):
     return pd.read_csv(path)
@@ -14,39 +32,39 @@ def load_data_from_url(path):
 def load_data_from_file(file):
     return pd.read_csv(file)
 
-# default csv file with github raw url
-csv_file_path = 'https://raw.githubusercontent.com/TKL01/Kinova-Dashboard/refs/heads/main/0_KinovaLog.csv'
+# load data based on selected option
+csv_file_path = csv_file_options[selected_file]
 df = load_data_from_url(csv_file_path)
 
-# Option to load local csv file
+# Option to upload a local csv file
 uploaded_file = st.file_uploader("Upload a CSV file", type=["csv"])
 if uploaded_file:
     df = load_data_from_file(uploaded_file)
 
-# display csv file
+# display data
 st.write("Contents of the CSV file:")
 st.dataframe(df)
 
-# extract stats from csv
-st.write("Stats:")
+# extract stats, minmax, mean, std
+st.write("Statistics Overview:")
 st.write(df.describe())
 
 # Dropdown for joint selection
-joint_options = [f"Joint_{i}" for i in range(7)]  # Joint_0 bis Joint_6
+joint_options = [f"Joint_{i}" for i in range(7)]  # Joint_0 to Joint_6
 selected_joint = st.selectbox("Select a specific Joint:", joint_options)
 
-# get joint number
+# get joint no.#
 joint_number = selected_joint.split("_")[1]
 
-# define column for joint
+# define columns 
 pos_col = f"Pos_{joint_number}"
 temp_col = f"Temp_{joint_number}"
 torque_col = f"Torque_{joint_number}"
 current_col = f"Current_{joint_number}"
 velocity_col = f"Velocity_{joint_number}"
-time_col = df.columns[0]  # time first column
+time_col = df.columns[0]  # Time is the first column
 
-# time span filter, change color with .toml
+# time span filter
 time_min, time_max = st.slider(
     "Select Time Range",
     min_value=float(df[time_col].min()),
@@ -54,14 +72,14 @@ time_min, time_max = st.slider(
     value=(float(df[time_col].min()), float(df[time_col].max()))
 )
 
-# filter function
+# filter and display data
 df_filtered = df[(df[time_col] >= time_min) & (df[time_col] <= time_max)]
 
-# Layout for diagrams (2 columns)
+# Layout for diagrams
 st.write(f"Diagrams for {selected_joint}:")
 col1, col2 = st.columns(2)
 
-# Function to plot 
+# Function to plot charts
 def plot_chart(data, x, y, xlabel, ylabel):
     chart = (
         alt.Chart(data)
@@ -75,7 +93,7 @@ def plot_chart(data, x, y, xlabel, ylabel):
     )
     return chart
 
-# show 2 colunns
+# Show diagrams in two columns
 with col1:
     st.altair_chart(plot_chart(df_filtered, time_col, pos_col, "Time [s]", "Position [deg]"))
     st.altair_chart(plot_chart(df_filtered, time_col, torque_col, "Time [s]", "Torque [Nm]"))
@@ -84,15 +102,15 @@ with col2:
     st.altair_chart(plot_chart(df_filtered, time_col, temp_col, "Time [s]", "Temperature [°C]"))
     st.altair_chart(plot_chart(df_filtered, time_col, current_col, "Time [s]", "Current [A]"))
 
-# last diagram wide (does not work currently!)
+# Show full-width diagram, DOES NOT WORK YET
 st.altair_chart(plot_chart(df_filtered, time_col, velocity_col, "Time [s]", "Velocity [deg/s]"))
 
-# advaanced stats
-st.write(f"Advanced Statistics for {selected_joint}:")
+# stats for joint selected
+st.write(f"Statistics for {selected_joint}:")
 stats = df_filtered[[time_col, pos_col, temp_col, torque_col, current_col, velocity_col]].describe()
 st.dataframe(stats)
 
-# dynamic xy labels
+#axis labels
 ylabel_map = {
     pos_col: "Position [deg]",
     temp_col: "Temperature [°C]",
@@ -100,12 +118,15 @@ ylabel_map = {
     current_col: "Current [A]",
     velocity_col: "Velocity [deg/s]",
 }
-selected_y_col = st.selectbox("Select Parameter for detailed View:", list(ylabel_map.keys()))
-selected_y_label = ylabel_map[selected_y_col]
 
-# single out joint diagram
-st.write(f"Detailed View: {selected_y_label}")
-st.altair_chart(plot_chart(df_filtered, time_col, selected_y_col, "Time [s]", selected_y_label))
+
+# selected_y_col = st.selectbox("Select Parameter for detailed View:", list(ylabel_map.keys()))
+# selected_y_label = ylabel_map[selected_y_col]
+
+# Single detailed diagram
+# st.write(f"Detailed View: {selected_y_label}")
+# st.altair_chart(plot_chart(df_filtered, time_col, selected_y_col, "Time [s]", selected_y_label))
+
 
 
 
