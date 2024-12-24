@@ -13,28 +13,36 @@ st.title("Kinova Dashboard")
 # }
 
 # Github repo relative paths
-csv_file_options = {
-    "Kinova Log 0": "data/0_KinovaLog.csv",
-    "Kinova Log 1": "data/0_KinovaLog_joint_1.csv",
+# csv_file_options = {
+#     "Kinova Log 0": "data/0_KinovaLog.csv",
+#     "Kinova Log 1": "data/0_KinovaLog_joint_1.csv",
     
-}
+# }
 
+data_folder = "data/"
+@st.cache_data
+def list_csv_files(folder):
+    return [f for f in os.listdir(folder) if f.endswith(".csv")]
 
-# Dropdown to select csv file
+# Generate file paths for dropdown
+csv_files = list_csv_files(data_folder)
+csv_file_options = {file_name: os.path.join(data_folder, file_name) for file_name in csv_files}
+
+# Dropdown for file selection
 selected_file = st.selectbox("Select a CSV file:", list(csv_file_options.keys()))
 
-# load selected csv
-@st.cache_data
-def load_data_from_url(path):
-    return pd.read_csv(path)
-
-@st.cache_data
-def load_data_from_file(file):
-    return pd.read_csv(file)
-
-# load data based on selected option
+# Get the relative path for the selected file
 csv_file_path = csv_file_options[selected_file]
-df = load_data_from_url(csv_file_path)
+
+# Load data
+@st.cache_data
+def load_data_from_file(file_path):
+    return pd.read_csv(file_path)
+
+df = load_data_from_file(csv_file_path)
+
+# Display the selected file name
+st.write(f"Selected file: {selected_file}")
 
 # Option to upload a local csv file
 uploaded_file = st.file_uploader("Upload a CSV file", type=["csv"])
