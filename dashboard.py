@@ -6,7 +6,7 @@ import os
 
 st.title("Kinova Dashboard")
 
-# Github repo raw links
+# Github repo raw links OLD without data folder:
 # csv_file_options = {
 #     "Kinova Log 0":'https://raw.githubusercontent.com/TKL01/Kinova-Dashboard/refs/heads/main/0_KinovaLog_joint_1.csv',
 #     "Kinova Log 1": 'https://raw.githubusercontent.com/TKL01/Kinova-Dashboard/refs/heads/main/0_KinovaLog_joint_3.csv',
@@ -19,30 +19,30 @@ st.title("Kinova Dashboard")
 #     "Kinova Log 1": "data/0_KinovaLog_joint_1.csv",
     
 # }
-
+# load csv files from data folder in github repo
 data_folder = "data/"
 @st.cache_data
 def list_csv_files(folder):
     return [f for f in os.listdir(folder) if f.endswith(".csv")]
 
-# Generate file paths for dropdown
+# generate file paths for dropdown
 csv_files = list_csv_files(data_folder)
 csv_file_options = {file_name: os.path.join(data_folder, file_name) for file_name in csv_files}
 
 # Dropdown for file selection
 selected_file = st.selectbox("Select a CSV file:", list(csv_file_options.keys()))
 
-# Get the relative path for the selected file
+# get relative path for selected file
 csv_file_path = csv_file_options[selected_file]
 
-# Load data
+# load data
 @st.cache_data
 def load_data_from_file(file_path):
     return pd.read_csv(file_path)
 
 df = load_data_from_file(csv_file_path)
 
-# Display the selected file name
+#display the selected file name
 st.write(f"Selected file: {selected_file}")
 
 # Option to upload a local csv file
@@ -102,7 +102,7 @@ def plot_chart(data, x, y, xlabel, ylabel):
     )
     return chart
 
-# Show diagrams in two columns
+#show diagrams in two columns
 with col1:
     st.altair_chart(plot_chart(df_filtered, time_col, pos_col, "Time [s]", "Position [deg]"))
     st.altair_chart(plot_chart(df_filtered, time_col, torque_col, "Time [s]", "Torque [Nm]"))
@@ -111,7 +111,7 @@ with col2:
     st.altair_chart(plot_chart(df_filtered, time_col, temp_col, "Time [s]", "Temperature [°C]"))
     st.altair_chart(plot_chart(df_filtered, time_col, current_col, "Time [s]", "Current [A]"))
 
-# Show full-width diagram, DOES NOT WORK YET
+#show full-width diagram, DOES NOT WORK YET
 st.altair_chart(plot_chart(df_filtered, time_col, velocity_col, "Time [s]", "Velocity [deg/s]"))
 
 # stats for joint selected
@@ -128,6 +128,7 @@ ylabel_map = {
     velocity_col: "Velocity [deg/s]",
 }
 
+##view selected joint in single diagram
 
 # selected_y_col = st.selectbox("Select Parameter for detailed View:", list(ylabel_map.keys()))
 # selected_y_label = ylabel_map[selected_y_col]
