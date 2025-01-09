@@ -64,7 +64,8 @@ async def opcua_get_temperature(client, name):
                 print(VarList[-1])
 
         # Create CSV
-        filename = f"{1}_KinovaLog_teaching_test_3_short.csv"
+        filename = f"{1}_KinovaLog_teaching_test_9_short_5.csv"
+        #filename = f"{1}_KinovaLog_fast_test.csv"
         with open(filename, 'w', newline='') as f:
             writer = csv.writer(f, dialect='excel')
             writer.writerow(["Time (s)", "Pos_0", "Pos_1", "Pos_2", "Pos_3", "Pos_4", "Pos_5", "Pos_6", 
@@ -75,11 +76,11 @@ async def opcua_get_temperature(client, name):
         
        # get data from OPC UA server:
         start_time = time.time()  # start time for calculating elapsed time
-        mins_in_secs = 120
+        seconds = 300 
         while True:
             elapsed_time = time.time() - start_time  # calculate elapsed time
-            if elapsed_time > mins_in_secs:  # stop after 2 mins
-                print("Stopping data collection after 2 minutes.")
+            if elapsed_time > seconds:  # stop after x secs
+                #print("Stopping data collection after" + seconds + "s")
                 break
             
             val = await client.read_values(VarList[:])
@@ -98,7 +99,7 @@ async def opcua_get_temperature(client, name):
             await asyncio.sleep(0.5)  # 2 hz sampling rate
 
 print("Starting OPCUA Client")
-client = Client("opc.tcp://192.168.0.100:4840")  # Pi IP address
+client = Client("opc.tcp://192.168.0.102:4840")  # always check Pi IP address
 print("Client Created")
 my_thread = threading.Thread(target=asyncThreads, args=(opcua_get_temperature, client, "Kinova"))
 my_thread.start()
