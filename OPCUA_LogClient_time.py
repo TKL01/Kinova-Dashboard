@@ -64,7 +64,7 @@ async def opcua_get_temperature(client, name):
                 print(VarList[-1])
 
         # Create CSV
-        filename = f"{1}_KinovaLog_teaching_test_9_short_5.csv"
+        filename = f"{1}_KinovaLog_teaching_test_9.csv"
         #filename = f"{1}_KinovaLog_fast_test.csv"
         with open(filename, 'w', newline='') as f:
             writer = csv.writer(f, dialect='excel')
@@ -73,60 +73,61 @@ async def opcua_get_temperature(client, name):
                              "Torque_0", "Torque_1", "Torque_2", "Torque_3", "Torque_4", "Torque_5", "Torque_6",
                              "Current_0", "Current_1", "Current_2", "Current_3", "Current_4", "Current_5", "Current_6",
                              "Velocity_0", "Velocity_1", "Velocity_2", "Velocity_3", "Velocity_4", "Velocity_5", "Velocity_6"])
-        
-       # get data from OPC UA server:
-        start_time = time.time()  # start time for calculating elapsed time
-        seconds = 300 
-        while True:
-            elapsed_time = time.time() - start_time  # calculate elapsed time
-            if elapsed_time > seconds:  # stop after x secs
-                #print("Stopping data collection after" + seconds + "s")
-                break
             
+#########################Set a time############################################################################################        
+#        # get data from OPC UA server:
+#         start_time = time.time()  # start time for calculating elapsed time
+#         seconds = 300 
+#         while True:
+#             elapsed_time = time.time() - start_time  # calculate elapsed time
+#             if elapsed_time > seconds:  # stop after x secs
+#                 #print("Stopping data collection after" + seconds + "s")
+#                 break
+            
+#             val = await client.read_values(VarList[:])
+            
+            
+#             print(f"Values to write: {val}")
+
+#             # check 
+#             if len(val) == 35:  # expected 35 values
+#                 with open(filename, 'a', newline='') as f:
+#                     writer = csv.writer(f, dialect='excel')
+#                     writer.writerow([elapsed_time] + val)  # add elapsed time as the first element
+#             else:
+#                 print(f"Unexpected number of values: {len(val)}")
+
+#             await asyncio.sleep(0.5)  # 2 hz sampling rate
+
+# print("Starting OPCUA Client")
+# client = Client("opc.tcp://192.168.0.102:4840")  # always check Pi IP address
+# print("Client Created")
+# my_thread = threading.Thread(target=asyncThreads, args=(opcua_get_temperature, client, "Kinova"))
+# my_thread.start()
+####################################################################################################################################
+
+#get data from OPC UA server:
+        start_time = time.time()  # Start time for calculating elapsed time
+        while True:
             val = await client.read_values(VarList[:])
             
-            
+            # Debugging
             print(f"Values to write: {val}")
 
-            # check 
+            # Check 
             if len(val) == 35:  # expected 35 values
+                elapsed_time = time.time() - start_time  # calculate elapsed time
                 with open(filename, 'a', newline='') as f:
                     writer = csv.writer(f, dialect='excel')
                     writer.writerow([elapsed_time] + val)  # add elapsed time as the first element
             else:
                 print(f"Unexpected number of values: {len(val)}")
 
-            await asyncio.sleep(0.5)  # 2 hz sampling rate
+            await asyncio.sleep(0.5)  # 2 hz sampling rate not enough?
+            # TO-DO sample 2 mins only, add weight, increase vel.:
 
 print("Starting OPCUA Client")
-client = Client("opc.tcp://192.168.0.102:4840")  # always check Pi IP address
+client = Client("opc.tcp://192.168.0.102:4840")  # Pi IP address
 print("Client Created")
 my_thread = threading.Thread(target=asyncThreads, args=(opcua_get_temperature, client, "Kinova"))
 my_thread.start()
-
-
-# # Get data from OPC UA server:
-#         start_time = time.time()  # Start time for calculating elapsed time
-#         while True:
-#             val = await client.read_values(VarList[:])
-            
-#             # Debugging
-#             print(f"Values to write: {val}")
-
-#             # Check 
-#             if len(val) == 35:  # expected 35 values
-#                 elapsed_time = time.time() - start_time  # Calculate elapsed time
-#                 with open(filename, 'a', newline='') as f:
-#                     writer = csv.writer(f, dialect='excel')
-#                     writer.writerow([elapsed_time] + val)  # Add elapsed time as the first element
-#             else:
-#                 print(f"Unexpected number of values: {len(val)}")
-
-#             await asyncio.sleep(0.5)  # 2 hz sampling rate not enough?
-#             # TO-DO sample 2 mins only, add weight, increase vel.:
-
-# print("Starting OPCUA Client")
-# client = Client("opc.tcp://192.168.0.100:4840")  # Pi IP address
-# print("Client Created")
-# my_thread = threading.Thread(target=asyncThreads, args=(opcua_get_temperature, client, "Kinova"))
-# my_thread.start()
