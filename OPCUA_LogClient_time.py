@@ -80,7 +80,7 @@ async def opcua_get_temperature(client, name):
                 print(VarList[-1])
 
         # Create CSV
-        filename = f"{1}_KinovaLog_0_0_90_API.csv"
+        filename = f"{1}_KinovaLog_0_135_135_API.csv"
         #filename = f"{1}_KinovaLog_fast_test.csv"
         with open(filename, 'w', newline='') as f:
             writer = csv.writer(f, dialect='excel')
@@ -149,7 +149,7 @@ print("Client Created")
 my_thread = threading.Thread(target=asyncThreads, args=(opcua_get_temperature, client, "Kinova"))
 my_thread.start()
 ####################################################################################################################################
-
+#########################Connect to Kinova gen3 7DOF robot and set random joint movement############################################################################################  
 
 
 import sys
@@ -236,7 +236,7 @@ def main():
         # Infinite loop for random movements
         try:
             while True:
-                success = move_joint_to_random_angle(base, joint_id=3, angle_min=0, angle_max=90)
+                success = move_joint_to_random_angle(base, joint_id=3, angle_min=-135, angle_max=135)
                 if not success:
                     print("Error during movement. Exiting loop.")
                     break
@@ -247,3 +247,4 @@ def main():
 
 if __name__ == "__main__":
     exit(main())
+####################################################################################################################################
