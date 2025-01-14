@@ -1,3 +1,8 @@
+###
+# This streamlit app visualizes the data collected by OPCUA_LogClient_time.py at https://irolabkinova.streamlit.app/
+# created by TKL
+###
+
 import streamlit as st
 import pandas as pd
 import altair as alt
