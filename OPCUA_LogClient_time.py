@@ -80,7 +80,7 @@ async def opcua_get_temperature(client, name):
                 print(VarList[-1])
 
         # Create CSV
-        filename = f"{1}_KinovaLog_0_135_135_API.csv"
+        filename = f"{0}_KinovaLog_45_90_API.csv"
         #filename = f"{1}_KinovaLog_fast_test.csv"
         with open(filename, 'w', newline='') as f:
             writer = csv.writer(f, dialect='excel')
@@ -157,6 +157,7 @@ import os
 import random
 import threading
 import time
+from datetime import datetime
 
 from kortex_api.autogen.client_stubs.BaseClientRpc import BaseClient
 from kortex_api.autogen.messages import Base_pb2
