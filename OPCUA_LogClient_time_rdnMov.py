@@ -11,11 +11,14 @@ import os
 import sys
 
 # Parameter
-move_duration = 20 # = duration of recording in secs
-cooldown_duration = 10  # Cooldown in secs
+move_duration = 180 # = duration of recording in secs 
+cooldown_duration = 60  # Cooldown in secs
+movement_pause = 0.5 # delay between joint movements
+offset_time = 1    # delay the first movement to let the OPC UA Client connect
 repetitions = 3  # No. of repetitions = No. of CSV files
 OPCUA_Server_IP = "opc.tcp://192.168.0.102:4840"
-filename_template = "{iteration}_KinovaLog_{move_duration}_{cooldown_duration}_API.csv"
+sampling_time = 0.5  # 2 Hz sampling rate to get data from OPC UA
+filename_template = "{iteration}_KinovaLog_{move_duration}_{cooldown_duration}_{angle_min}_{angle_max}_weight_API.csv"
 joint_id = 3    # joint number, starting from 0 (joint_id = 3 = joint #4)
 angle_min = 45  # angle range 
 angle_max = 90  
@@ -113,7 +116,7 @@ async def opcua_log_data(client, iteration):
                 ))
                 #print(VarList[-1])
 
-        filename = filename_template.format(iteration=iteration, move_duration=move_duration, cooldown_duration=cooldown_duration)
+        filename = filename_template.format(iteration=iteration, move_duration=move_duration, cooldown_duration=cooldown_duration, angle_min=angle_min, angle_max=angle_max)
         with open(filename, 'w', newline='') as f:
             writer = csv.writer(f, dialect='excel')
             writer.writerow(["Time (s)", "Pos_0", "Pos_1", "Pos_2", "Pos_3", "Pos_4", "Pos_5", "Pos_6", 
@@ -122,12 +125,17 @@ async def opcua_log_data(client, iteration):
                              "Current_0", "Current_1", "Current_2", "Current_3", "Current_4", "Current_5", "Current_6",
                              "Velocity_0", "Velocity_1", "Velocity_2", "Velocity_3", "Velocity_4", "Velocity_5", "Velocity_6"])  # column names
 
+            total_duration = move_duration + cooldown_duration
             start_time = time.time()
-            while time.time() - start_time < move_duration:
+            first_record_time = None
+            while time.time() - start_time < total_duration:
                 elapsed_time = time.time() - start_time
+                if first_record_time is None:
+                    first_record_time = elapsed_time
+                normalized_time = elapsed_time - first_record_time    
                 val = await client.read_values(VarList[:])
-                writer.writerow([elapsed_time] + val)
-                await asyncio.sleep(0.5)  # 2 Hz sampling rate
+                writer.writerow([normalized_time] + val)
+                await asyncio.sleep(sampling_time)  # 2 Hz sampling rate
 
 def check_for_end_or_abort(e):
     def check(notification, e=e):
@@ -155,10 +163,15 @@ def main():
             opcua_thread = threading.Thread(target=asyncio.run, args=(opcua_log_data(opcua_client, iteration),))
             opcua_thread.start()
 
+            # wait a sec then start the random joint movement
+            time.sleep(offset_time)
+
             # Random joint movement according to duration
             start_time = time.time()
             while time.time() - start_time < move_duration:
                 move_joint_to_random_angle(base)
+                #add pause between movements
+                time.sleep(movement_pause)
 
             # Set joint #4 to 0°
             move_joint_to_zero(base)
