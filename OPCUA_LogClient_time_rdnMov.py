@@ -11,11 +11,11 @@ import os
 import sys
 
 # Parameter
-move_duration = 180 # = duration of recording in secs 
-cooldown_duration = 60  # Cooldown in secs
+move_duration = 120 # total duration of logging = move_duration + cooldown_dration
+cooldown_duration = 30  # Cooldown in secs
+repetitions = 10  # No. of repetitions = No. of CSV files
 movement_pause = 0.5 # delay between joint movements
 offset_time = 1    # delay the first movement to let the OPC UA Client connect
-repetitions = 3  # No. of repetitions = No. of CSV files
 OPCUA_Server_IP = "opc.tcp://192.168.0.102:4840"
 sampling_time = 0.5  # 2 Hz sampling rate to get data from OPC UA
 filename_template = "{iteration}_KinovaLog_{move_duration}_{cooldown_duration}_{angle_min}_{angle_max}_weight_API.csv"
