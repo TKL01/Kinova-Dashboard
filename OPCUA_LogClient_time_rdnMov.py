@@ -20,8 +20,8 @@ OPCUA_Server_IP = "opc.tcp://192.168.0.102:4840"
 sampling_time = 0.5  # 2 Hz sampling rate to get data from OPC UA
 filename_template = "{iteration}_KinovaLog_{move_duration}_{cooldown_duration}_{angle_min}_{angle_max}_weight_API.csv"
 joint_id = 3    # joint number, starting from 0 (joint_id = 3 = joint #4)
-angle_min = 45  # angle range 
-angle_max = 90  
+angle_min = -90  # angle range 
+angle_max = 135  
 
 # Random Joint configuration
 def move_joint_to_random_angle(base, joint_id=3, angle_min=angle_min, angle_max=angle_max):
