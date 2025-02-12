@@ -4,6 +4,7 @@
 ###
 
 import streamlit as st
+st.set_page_config(layout="wide")
 import pandas as pd
 import altair as alt
 import os
@@ -23,11 +24,6 @@ import os
 # }
 # load csv files from data folder in github repo
 
-
-import streamlit as st
-import pandas as pd
-import altair as alt
-import os
 
 st.title("Industrial Robot Dashboard")
 
