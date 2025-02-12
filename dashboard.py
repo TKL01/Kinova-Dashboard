@@ -8,6 +8,8 @@ st.set_page_config(layout="wide")
 import pandas as pd
 import altair as alt
 import os
+import zipfile
+import io
 
 # Github repo raw links OLD without data folder:
 # csv_file_options = {
@@ -56,6 +58,25 @@ def list_csv_files(folder):
 data_folder = robot_options[selected_robot]
 csv_files = list_csv_files(data_folder)
 csv_file_options = {file_name: os.path.join(data_folder, file_name) for file_name in csv_files}
+
+# Add a download button for all CSV files in the selected robot's folder
+def create_zip_file(file_paths):
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, "w") as zip_file:
+        for file_path in file_paths:
+            with open(file_path, "rb") as f:
+                zip_file.writestr(os.path.basename(file_path), f.read())
+    buffer.seek(0)
+    return buffer
+
+if st.button("Download All CSV Files"):
+    zip_buffer = create_zip_file(csv_file_options.values())
+    st.download_button(
+        label="Download ZIP",
+        data=zip_buffer,
+        file_name=f"{selected_robot}_csv_files.zip",
+        mime="application/zip"
+    )
 
 # Dropdown for file selection
 selected_file = st.selectbox("Select a CSV file:", list(csv_file_options.keys()))
