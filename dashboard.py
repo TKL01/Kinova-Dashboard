@@ -1,5 +1,5 @@
 ###
-# This streamlit app visualizes the data collected by OPCUA_LogClient_time.py at https://irolabkinova.streamlit.app/
+# This streamlit app visualizes the data collected by OPCUA_LogClient_time_rdnMov.py and xArm_6_rdnMov_J3 at https://irolabkinova.streamlit.app/
 # created by TKL
 ###
 
@@ -22,17 +22,14 @@ import os
     
 # }
 # load csv files from data folder in github repo
-###
-# This streamlit app visualizes the data collected by OPCUA_LogClient_time.py at https://irolabkinova.streamlit.app/
-# created by TKL
-###
+
 
 import streamlit as st
 import pandas as pd
 import altair as alt
 import os
 
-st.title("Robot Dashboard")
+st.title("Industrial Robot Dashboard")
 
 # define data folders for each robot
 kinova_data_folder = "data/Kinova"
@@ -40,8 +37,8 @@ xarm_data_folder = "data/UFactory"
 
 # Dropdown for robot selection
 robot_options = {
-    "Kinova": kinova_data_folder,
-    "xArm6": xarm_data_folder
+    "Kinova Gen3 7DoF": kinova_data_folder,
+    "UFactory xArm6 6DoF": xarm_data_folder
 }
 selected_robot = st.selectbox("Select a Robot:", list(robot_options.keys()))
 
