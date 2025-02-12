@@ -10,8 +10,8 @@ cooldown_duration = 30  # Cooldown in secs
 repetitions = 5  # No. of repetitions = No. of CSV files
 sampling_time = 0.5  # 2 Hz sampling rate
 joint_id = 2  # joint number, starting from 0 (joint_id = 2 = joint #3) TEST
-angle_min, angle_max = -200, -90  # angle range TEST
-speed = 30 # speed in °/s
+angle_min, angle_max = -190, -40  # angle range TEST
+speed = 50 # speed in °/s
 """set random speed, WIP"""
 # speed_min, speed_max = 10, 30   # speed range
 filename_template = "{iteration}_xArm6Log_{move_duration}_{cooldown_duration}_{angle_min}_{angle_max}_{speed}.csv"

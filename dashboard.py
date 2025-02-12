@@ -50,6 +50,15 @@ selected_robot = st.selectbox("Select a Robot:", list(robot_options.keys()))
 def list_csv_files(folder):
     return [f for f in os.listdir(folder) if f.endswith(".csv")]
 
+# check files
+# @st.cache_data
+# def list_csv_files(folder):
+#     files = os.listdir(folder)
+#     st.write("Files in folder:", files)
+#     csv_files = [f for f in files if f.endswith(".csv")]
+#     st.write("CSV files:", csv_files)
+#     return csv_files
+
 # generate file paths for dropdown based on selected robot
 data_folder = robot_options[selected_robot]
 csv_files = list_csv_files(data_folder)
