@@ -7,15 +7,16 @@ from xarm.wrapper import XArmAPI
 ip = '10.2.33.190'  # xArm6 IP DC BOX
 move_duration = 270  # # total duration of logging = move_duration + cooldown_dration
 cooldown_duration = 30  # Cooldown in secs
-repetitions = 5  # No. of repetitions = No. of CSV files
+repetitions = 7  # No. of repetitions = No. of CSV files
 sampling_time = 0.5  # 2 Hz sampling rate
-joint_id = 2  # joint number, starting from 0 (joint_id = 2 = joint #3) TEST
-angle_min, angle_max = -190, -40  # angle range TEST
+joint_id = 1  # joint DUT, joint number, starting from 0 (joint_id = 2 = joint #3) TEST
+joint_3_id = 2  # joint #3 set angle
+angle_min, angle_max = -105, 95  # angle range TEST
+angle_3 = -180 # set angle for joint #3
 speed = 50 # speed in °/s
 """set random speed, WIP"""
 # speed_min, speed_max = 10, 30   # speed range
-filename_template = "{iteration}_xArm6Log_{move_duration}_{cooldown_duration}_{angle_min}_{angle_max}_{speed}.csv"
-
+filename_template = "{iteration}_xArm6Log_{move_duration}_{cooldown_duration}_{angle_min}_{angle_max}_{speed}_j2.csv"
 # connect/init
 arm = XArmAPI(ip)
 arm.motion_enable(enable=True)
@@ -23,16 +24,23 @@ arm.set_mode(0)
 arm.set_state(state=0)
 arm.move_gohome(wait=True)
 
+def move_joint_to_angle():
+    """Moves the 3rd joint to a specific angle"""
+    print(f"Move Joint {joint_3_id + 1} to {angle_max:.2f}°")
+    angles = arm.get_servo_angle()[1]  # get current angles
+    angles[joint_3_id] = angle_3  # only change 3rd joint 
+    arm.set_servo_angle(angle=angles, speed=speed, wait=True)
+
 def move_joint_to_random_angle():
-    """Moves the 3rd joint randomly between angle range"""
+    """Moves the 2nd joint randomly between angle range"""
     random_angle = random.uniform(angle_min, angle_max)
     print(f"Move Joint {joint_id + 1} to {random_angle:.2f}°")
     angles = arm.get_servo_angle()[1]  # get current angles
-    angles[joint_id] = random_angle  # only change 3rd joint TEST
+    angles[joint_id] = random_angle  # only change 2nd joint TEST
     arm.set_servo_angle(angle=angles, speed=speed, wait=True)
     
 def move_joint_to_zero():
-    """Set 3rd joint to 0° for cooling"""
+    """Set 2nd joint to 0° for cooling"""
     print(f"Set joint {joint_id + 1} to 0°")
     angles = arm.get_servo_angle()[1]
     angles[joint_id] = 0   # degrees
@@ -78,7 +86,8 @@ def main():
         
         time.sleep(1)  # pause before movement
 
-        # Random joint movement according to duration
+        # Random joint movement according to duration, first move joint #3 to -180 for strech position
+        move_joint_to_angle()
         start_time = time.time()
         while time.time() - start_time < move_duration:
             move_joint_to_random_angle()
