@@ -7,16 +7,16 @@ from xarm.wrapper import XArmAPI
 ip = '10.2.33.190'  # xArm6 IP DC BOX
 move_duration = 270  # # total duration of logging = move_duration + cooldown_dration
 cooldown_duration = 30  # Cooldown in secs
-repetitions = 7  # No. of repetitions = No. of CSV files
+repetitions = 10  # No. of repetitions = No. of CSV files
 sampling_time = 0.5  # 2 Hz sampling rate
-joint_id = 1  # joint DUT, joint number, starting from 0 (joint_id = 2 = joint #3) TEST
+joint_id = 2  # joint DUT, joint number, starting from 0 (joint_id = 2 = joint #3) TEST
 joint_3_id = 2  # joint #3 set angle
-angle_min, angle_max = -105, 95  # angle range TEST
+angle_min, angle_max = -190, -10  # angle range TEST
 angle_3 = -180 # set angle for joint #3
-speed = 50 # speed in °/s
+speed = 30 # speed in °/s
 """set random speed, WIP"""
 # speed_min, speed_max = 10, 30   # speed range
-filename_template = "{iteration}_xArm6Log_{move_duration}_{cooldown_duration}_{angle_min}_{angle_max}_{speed}_j2.csv"
+filename_template = "{iteration}_xArm6Log_{move_duration}_{cooldown_duration}_{angle_min}_{angle_max}_{speed}.csv"
 # connect/init
 arm = XArmAPI(ip)
 arm.motion_enable(enable=True)
@@ -32,7 +32,7 @@ def move_joint_to_angle():
     arm.set_servo_angle(angle=angles, speed=speed, wait=True)
 
 def move_joint_to_random_angle():
-    """Moves the 2nd joint randomly between angle range"""
+    """Moves the 3nd joint randomly between angle range"""
     random_angle = random.uniform(angle_min, angle_max)
     print(f"Move Joint {joint_id + 1} to {random_angle:.2f}°")
     angles = arm.get_servo_angle()[1]  # get current angles
@@ -67,7 +67,6 @@ def log_data(filename, duration):
             torques = arm.joints_torque
             currents = arm.currents
             velocities = arm.realtime_joint_speeds
-            # velocities = [velocities_value] * 7
             tool_position = arm.position  # X, Y, Z, Roll, Pitch, Yaw
             writer.writerow([elapsed_time] + positions + temps + torques + currents + velocities + tool_position)
 
@@ -86,8 +85,8 @@ def main():
         
         time.sleep(1)  # pause before movement
 
-        # Random joint movement according to duration, first move joint #3 to -180 for strech position
-        move_joint_to_angle()
+        # Random joint movement according to duration 
+        # move_joint_to_angle() #first move joint #3 to -180 for strech position
         start_time = time.time()
         while time.time() - start_time < move_duration:
             move_joint_to_random_angle()
