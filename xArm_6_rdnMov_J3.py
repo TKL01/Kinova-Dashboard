@@ -6,14 +6,14 @@ from xarm.wrapper import XArmAPI
 # Parameter
 ip = '10.2.33.190'  # xArm6 IP DC BOX
 move_duration = 270  # # total duration of logging = move_duration + cooldown_dration
-cooldown_duration = 30  # Cooldown in secs
-repetitions = 10  # No. of repetitions = No. of CSV files
+cooldown_duration = 60  # Cooldown in secs
+repetitions = 3  # No. of repetitions = No. of CSV files
 sampling_time = 0.5  # 2 Hz sampling rate
 joint_id = 2  # joint DUT, joint number, starting from 0 (joint_id = 2 = joint #3) TEST
 joint_3_id = 2  # joint #3 set angle
-angle_min, angle_max = -190, -10  # angle range TEST
+angle_min, angle_max = -140, -20  # angle range TEST
 angle_3 = -180 # set angle for joint #3
-speed = 30 # speed in °/s
+speed = 45 # speed in °/s
 """set random speed, WIP"""
 # speed_min, speed_max = 10, 30   # speed range
 filename_template = "{iteration}_xArm6Log_{move_duration}_{cooldown_duration}_{angle_min}_{angle_max}_{speed}.csv"
