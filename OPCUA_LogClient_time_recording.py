@@ -64,7 +64,7 @@ async def opcua_log_data(client):
                 ))
                 #print(VarList[-1])
         
-        filename = "KinovaLog_HoloLens_recording.csv"
+        filename = "KinovaLog_HoloLens_recording_0_j4.csv"
         with open(filename, 'w', newline='') as f:
             writer = csv.writer(f, dialect='excel')
             writer.writerow(["Time (s)", "Pos_0", "Pos_1", "Pos_2", "Pos_3", "Pos_4", "Pos_5", "Pos_6", 
