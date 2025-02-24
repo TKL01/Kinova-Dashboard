@@ -3,7 +3,7 @@ import csv
 import time
 from asyncua import Client
 
-OPCUA_Server_IP = "opc.tcp://192.168.0.103:4840"
+OPCUA_Server_IP = "opc.tcp://192.168.0.106:4840" #raspberry pi opcua server ip
 sampling_time = 0.5  # 2 Hz sampling rate
 
 # OPC-Client and logging
@@ -64,7 +64,7 @@ async def opcua_log_data(client):
                 ))
                 #print(VarList[-1])
         
-        filename = "KinovaLog_HoloLens_recording_0_j4.csv"
+        filename = "KinovaLog_HoloLens_recording_6_j2.csv"
         with open(filename, 'w', newline='') as f:
             writer = csv.writer(f, dialect='excel')
             writer.writerow(["Time (s)", "Pos_0", "Pos_1", "Pos_2", "Pos_3", "Pos_4", "Pos_5", "Pos_6", 
