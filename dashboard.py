@@ -151,6 +151,21 @@ def plot_chart(data, x, y, xlabel, ylabel):
     )
     return chart
 
+def plot_chart(data, x, y, xlabel, ylabel):
+    zoom = alt.selection_interval(bind="scales")  # scroll wheel zoom and pan
+    chart = (
+        alt.Chart(data)
+        .mark_line()
+        .encode(
+            x=alt.X(x, title=xlabel),
+            y=alt.Y(y, title=ylabel),
+            tooltip=[x, y]
+        )
+        .properties(width=350, height=300)
+        .add_params(zoom)
+    )
+    return chart
+
 # show diagrams in two columns
 with col1:
     st.altair_chart(plot_chart(df_filtered, time_col, pos_col, "Time [s]", "Position [deg]"))
